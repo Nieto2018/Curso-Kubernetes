@@ -1,0 +1,64 @@
+# Display addresses of the control plane and services with label kubernetes.io/cluster-service=true. To further debug and
+# diagnose cluster problems, use 'kubectl cluster-info dump'.
+kubectl cluster-info
+
+# Muestra los contextos
+kubectl config get-contexts
+
+# Muestra el contexto actual
+kubectl config current-context
+
+# Muestra la configuración del contexto actual
+kubectl config view
+
+# Obtiene todo los tipos de elementos de kubernetes
+kubectl api-resources
+
+# Muestra las versiones de las API soportadas por el servidor in la forma de <grupo>/version
+kubectl api-versions
+
+# Crea objetos o le aplica cambios a partir de un archivo yaml
+kubectl apply -f <ruta_yaml>
+
+# Borrar todo los objetos creados a partir de un archivo yaml
+kubectl delete -f <ruta_yaml>
+
+# Crea un pod con una imagen concreta
+kubectl run podtest --image=nginx:alpine
+
+# Obtener pods u otro objetos
+kubectl get <objeto>
+kubectl get pods
+
+# Obtener pods u otro objetos con más detalles
+kubectl get pods -o wide
+
+# Obtener pods u otro objetos que tengan un cierto label
+kubectl get <objeto> -l <label>=<valor_label>
+kubectl get pods -l app=pod-label
+
+# Obtener yaml de los pods u otro objetos
+kubectl get pods -o yaml
+
+# Describir pods u otro objetos
+kubectl describe pods
+
+# Muestra los logs de un contenedor de un pod pods
+kubectl logs <nombre_pod> <nombre_contenedor>
+kubectl logs dos-contenedores cont2
+
+# Borrar pods u otros objetos
+kubectl delete <objeto> <nombre_objeto>
+kubectl delete pod <nombre_pod>
+
+# Lanza un comando en uno de los contenedores del pod
+kubectl exec -it <nombre_pod> -- <comando>
+kubectl exec -it dos-contenedores -- sh
+
+# Lanza un comando en el contenedor indicado del pod
+kubectl exec -it <nombre_pod> -c <nombre_contenedor> -- <comando>
+kubectl exec -it dos-contenedores -c cont2 -- sh
+
+# Mapea los puertos de un pod
+kubectl port-forward <nombre_pod> <puerto_maquina>:<puerto_pod>
+kubectl port-forward dos-contenedores 8082:8082
