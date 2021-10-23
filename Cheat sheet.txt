@@ -20,7 +20,12 @@ kubectl api-resources
 kubectl api-versions
 
 # Crea objetos o le aplica cambios a partir de un archivo yaml
+# Si un mismo archivo de Deployment cambia crea un nuevo ReplicaSet que equivale a una revisión
 kubectl apply -f <ruta_yaml>
+
+# Para Deployments, registra el comando en el CHANGE-CAUSE del history
+# Si un mismo archivo de Deployment cambia crea un nuevo ReplicaSet que equivale a una revisión
+kubectl apply -f <ruta_yaml> --record
 
 # Borrar todo los objetos creados a partir de un archivo yaml
 kubectl delete -f <ruta_yaml>
@@ -64,3 +69,20 @@ kubectl exec -it dos-contenedores -c cont2 -- sh
 # Mapea los puertos de un pod
 kubectl port-forward <nombre_pod> <puerto_maquina>:<puerto_pod>
 kubectl port-forward dos-contenedores 8082:8082
+
+# Muestra el estado de un deployment
+kubectl rollout status deployment <nobre_deployment>
+kubectl rollout status deployment deployment-test
+kubectl rollout status deploy deployment-test
+
+# Muestra las revisiones, que equivale a ReplicaSets, de un deployment
+kubectl rollout history deployment <nobre_deployment>
+kubectl rollout history deployment deployment-test
+
+# Muestra los cambios de la revisión en el deployment
+kubectl rollout history deployment <nombre_deployment> --revision=<numero_revision>
+kubectl rollout history deployment deployment-test --revision=2
+
+# Vuelve a la revisión indicada
+kubectl rollout undo deployment <nombre_deployment> --to-revision=<numero_revision>
+kubectl rollout undo deployment deployment-test --to-revision=6
