@@ -37,6 +37,9 @@ kubectl run podtest --image=nginx:alpine
 kubectl get <objeto>
 kubectl get pods
 
+# Obtener pods u otro objetos de forma constante
+kubectl get pods --watch
+
 # Obtener pods u otro objetos con más detalles
 kubectl get pods -o wide
 

@@ -1,0 +1,18 @@
+<div id="id01"></div>
+<img src="https://th.bing.com/th/id/R.98dcc35c9b9fec5cf88df267efae159c?rik=zoYbJ0KLCBmHfw&pid=ImgRaw&r=0">
+
+<script>
+var xmlhttp = new XMLHttpRequest();
+// var url = "http://backend-k8s-hands-on";
+var url = "http://192.168.49.2:32529";
+
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var resp = JSON.parse(this.responseText);
+        document.getElementById("id01").innerHTML = '<h2>La hora es ' + resp.time + ' y el hostname es ' + resp.hostname + '</h2>';
+    }
+};
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+
+</script>
