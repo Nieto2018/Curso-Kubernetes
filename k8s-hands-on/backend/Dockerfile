@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1
 
-# docker build -t k8s-hands-on .
-# docker run --rm -it --name golang-backend -p 9090:9090 k8s-hands-on
+# docker build -t k8s-hands-on:v1 .
+# docker run --rm -it --name golang-backend -p 9090:9090 k8s-hands-on:v1
+
+# minikube image build -t k8s-hands-on:v1 .
 
 ##
 ## Build
