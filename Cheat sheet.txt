@@ -94,3 +94,15 @@ kubectl rollout undo deployment deployment-test --to-revision=6
 # En el caso de minikube coincide con la IP que le asigna Docker
 minikube service <nombre_servicio> --url
 minikube service my-service --url
+
+# Acceder a un servicio que está en otro namespace, ejemplo con curl
+curl <nombre_servicio>.<nombre_namespace>.svc.cluster.local
+curl backend-k8s-hands-on.ci.svc.cluster.local
+
+# Crear contexto
+kubectl config set-context <nombre_contexto> --namespace=<nombre_namespace> --cluster=<nombre_cluster> --user=<nombre_usuario>
+kubectl config set-context ci-context --namespace=ci --cluster=minikube --user=minikube
+
+# Cambiar de contexto
+kubectl config use-context <nombre_contexto>
+kubectl config use-context ci-context
