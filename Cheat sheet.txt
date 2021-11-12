@@ -47,7 +47,8 @@ kubectl get pods -o wide
 kubectl get <objeto> -l <label>=<valor_label>
 kubectl get pods -l app=pod-label
 
-# Obtener yaml de los pods u otro objetos
+# Obtener yaml/json de configuración de los pods u otro objetos
+kubectl get <objeto> -o yaml/json
 kubectl get pods -o yaml
 
 # Describir pods u otro objetos
@@ -106,3 +107,7 @@ kubectl config set-context ci-context --namespace=ci --cluster=minikube --user=m
 # Cambiar de contexto
 kubectl config use-context <nombre_contexto>
 kubectl config use-context ci-context
+
+# Crear configmap desde archivo
+kubectl create configmap <nombre_configmap> --from-file=<ruta_fichero>
+kubectl create configmap nginx-config --from-file=configmaps-examples/nginx.conf 
