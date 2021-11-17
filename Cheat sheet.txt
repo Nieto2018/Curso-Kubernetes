@@ -111,3 +111,21 @@ kubectl config use-context ci-context
 # Crear configmap desde archivo
 kubectl create configmap <nombre_configmap> --from-file=<ruta_fichero>
 kubectl create configmap nginx-config --from-file=configmaps-examples/nginx.conf 
+
+# Crear secret desde archivo
+kubectl create secret <tipo_secret> <nombre_secret> --from-file=<ruta_fichero>
+kubectl create secret generic mysecret --from-file=./test.txt
+
+# Decodificar contenido de un secret (data)
+echo <data> | base64 --decode
+echo c2VjcmV0MT1ob2xhCnNlY3JldDI9YWRpb3M | base64 --decode
+
+# Codificar una cadena
+echo <cadena> | base64
+echo hola | base64
+
+# Reemplazar las variables de entornos en archivo en la shell con la aplicación "envsubst"
+# Las variables las tenemos que definir previamente en nuestra máquina
+# Sirve para evitar meter la información en git y que solo sea posible desencriptarlos en la misma máquina
+envsubst <ruta_fichero_con_variables> > <ruta_fichero_con_variables_sustituidas>
+envsubst < secure.yaml > tmp.yaml
