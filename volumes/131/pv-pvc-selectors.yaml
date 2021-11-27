@@ -28,8 +28,6 @@ spec:
   hostPath:
     path: "/mysql"
 ---
-# El PVC no reclama ningún PV en concreto, por lo que tomará una que esté 
-# libre que tenga las carecterísticas solicitadas
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
