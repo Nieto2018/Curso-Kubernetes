@@ -1,0 +1,46 @@
+#########
+# RBAC
+#########
+# Crea la key del usuario, lo necesitamos para crear la CSR (Certificate Signing Request)
+openssl genrsa -out antonio-minikube.key 2048
+
+# Crea la CSR a partir de la key generada
+# CN (Common Name) -> Kubernetes lo tomará como el nombre del usuario
+# O (Organization) -> Kubernetes lo tomará como el nombre del grupo
+openssl req -new -key antonio-minikube.key -out antonio-minikube.csr -subj "/CN=antonio/O=dev"
+
+# Lanzamos el comando para ver la configuración de los clusters, y nos quedamos
+# con el atributo certificate-authority del cluster que nos interese
+# Ejemplo certificate-authority: /home/<usuario>/.minikube/ca.crt
+kubectl config view
+
+# Firma el CSR generado en el paso anterior, con el CA del cluster, para luego
+# enviarselo al usuario para que se autentique en el cluster
+sudo openssl x509 -req -in antonio-minikube.csr -CA /home/<usuario>/.minikube/ca.crt -CAkey /home/<usuario>/.minikube/ca.key -CAcreateserial -out antonio-minikube.crt -days 500
+
+# Valida que en el certificado se escribió bien el CN y el O
+openssl x509 -in antonio-minikube.crt -noout -text
+
+### Configurar el certificado (hay dos opciones)
+
+## Configurar en un lugar aislado (contenedor de Docker, máquina virtual, etc). Se comparte el crt, no la key de la CA
+# docker run --rm -it --network minikube -v $PWD:/test -w /test -v /home/nieto/.minikube/ca.crt:/ca.crt -v /usr/bin/kubectl:/usr/bin/kubectl alpine sh # Da problemas de permisos al usar kubectl
+docker run --rm -it --network minikube -v $PWD:/test -w /test -v /home/nieto/.minikube/ca.crt:/ca.crt --entrypoint="" --user root bitnami/kubectl:latest bash
+
+## Crea un contexto y configura el certificado para el usuario (en el mismo terminal)
+kubectl config set-cluster minikube --server=https://192.168.49.2:8443 --certificate-authority=/ca.crt
+kubectl config set-credentials antonio --client-certificate=antonio-minikube.crt --client-key=antonio-minikube.key
+kubectl config set-context antonio --cluster=minikube --user=antonio
+kubectl config use-context antonio
+
+# Se utiliza para activar RBAC si no está habilitado por defecto
+minikube start --vm-driver=none --extra-config=apiserver.authorization-mode=RBAC
+
+# Verificar si RBAC está activo (si devuelve "--authorization-mode=Node,RBAC" está activado)
+kubectl cluster-info dump | grep authorization-mode
+
+# Listar todos los contextos del kubectl
+kubectl config get-contexts
+
+# Para cambiar de contexto
+kubectl config use-context minikube
