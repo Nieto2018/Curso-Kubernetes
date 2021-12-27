@@ -1,0 +1,10 @@
+## Comandos para AWS Cli
+
+# Muestra la información del usuario logado
+aws sts get-caller-identity
+
+# Crea un cluster con los parámetros opcionales indicados (--without-nodegroup, region, zones)
+eksctl create cluster --name test-cluster --without-nodegroup --region us-east-1 --zones us-east-1b,us-east-1a
+
+# Añadir el contexto del cluster al archivo .kube/config
+aws eks --region us-east-1 --zones update-kubeconfig --name test-cluster
