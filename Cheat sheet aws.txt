@@ -8,3 +8,52 @@ eksctl create cluster --name test-cluster --without-nodegroup --region us-east-1
 
 # Añadir el contexto del cluster al archivo .kube/config
 aws eks --region us-east-1 --zones update-kubeconfig --name test-cluster
+
+# Crea un nodo para asignarlo a un cluster
+# https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html
+eksctl create nodegroup \
+  --cluster test-cluster \
+  --region us-east-1 \
+  --name test-nodes \
+  --node-type t3.medium \
+  --nodes 1 \
+  --nodes-min 1 \
+  --nodes-max 3 \
+  --asg-access
+
+# Crea el balanceador de carga
+https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+
+# Crea el service account para el balanceador de carga
+# https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+# Replace my_cluster with the name of your cluster and 111122223333 with your account ID and then run the command.
+eksctl create iamserviceaccount \
+  --cluster=test-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --attach-policy-arn=arn:aws:iam::111122223333:policy/AWSLoadBalancerControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --approve
+
+# Despliega el balanceador de carga
+# https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=test-cluster \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller 
+
+## Enlaces
+
+# CloudFormation
+https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filteringStatus=active&filteringText=&viewNested=true&hideStacks=false
+
+# EKS (Lista de los clusters)
+https://console.aws.amazon.com/eks/home?region=us-east-1#/clusters
+
+# EC2 (Servicio para correr máquina virtuales) Aquí vemos los nodos que corren en nuestro cluster
+https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:
+
+## Notas
+- Amazon administra el master y nosotros administramos los nodos
+- El balanceador de carga se crea al crear el ingress controller
