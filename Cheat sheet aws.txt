@@ -9,8 +9,12 @@ eksctl create cluster --name test-cluster --without-nodegroup --region us-east-1
 # Añadir el contexto del cluster al archivo .kube/config
 aws eks --region us-east-1 --zones update-kubeconfig --name test-cluster
 
+# Muestras las IP que apuntan al DNS (URL sin http(s))
+nslookup <DNS>
+
 # Crea un nodo para asignarlo a un cluster
 # https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html
+# --asg-access agrega la política de cluster autoscaling, se crea automáticamente si usas EKS
 eksctl create nodegroup \
   --cluster test-cluster \
   --region us-east-1 \
@@ -50,10 +54,26 @@ https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filt
 
 # EKS (Lista de los clusters)
 https://console.aws.amazon.com/eks/home?region=us-east-1#/clusters
+EKS contiene:
+- Clusters
 
 # EC2 (Servicio para correr máquina virtuales) Aquí vemos los nodos que corren en nuestro cluster
 https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:
+EC2 contiene:
+- Instancias
+- Balanceadores de carga
+
+# Ejemplo de HPA
+https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
+https://docs.aws.amazon.com/es_es/eks/latest/userguide/horizontal-pod-autoscaler.html
+## Otro ejemplo
+https://aws.amazon.com/es/premiumsupport/knowledge-center/eks-metrics-server-pod-autoscaler/
+
+# Cluster autoscaling
+https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html
+
 
 ## Notas
 - Amazon administra el master y nosotros administramos los nodos
 - El balanceador de carga se crea al crear el ingress controller
+- Los servicios tienen que ser de NodePort, ya que el balanceador está fuera del cluster
